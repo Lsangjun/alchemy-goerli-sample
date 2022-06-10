@@ -73,7 +73,7 @@ contract UpdateMessage {
 ```
 
 ### Script for deployment and deploy
-- Script
+```deploy.js``` - Script for sample deployment
 ```javascript
 const { ethers } = require("hardhat");
 
@@ -94,9 +94,33 @@ main()
     }); 
 ```
 
-- Deploy using script
-
-Make sure you specify network you are deploying contract to
+Deploy using script above and make sure you specify network that contract is deploying to.
 ```sh
 npx hardhat run scripts/deploy.js --network goerli
+```
+
+## Interact with deployed smart contract
+```interact.js```
+
+With contract address and abi, we can directly interact with the smart contract. We need a Ethereum Node Provider, in this case, *Alchemy*, and signer, which is user(wallet) in this case. 
+```javascript
+// provider - Alchemy
+const provider = new ethers.providers.AlchemyProvider(network="goerli", API_KEY);
+// signer - Wallet private key with provider entry point
+const signer = new ethers.Wallet(PRIVATE_KEY, provider)
+// contract instance 
+const contractJSON = require("../artifacts/contracts/UpdateMessage.sol/UpdateMessage.json");
+const contract = new ethers.Contract(CONTRACT_ADDRESS, contract.abi, signer);
+```
+After the set up, we can directly communicate with variables and functions in smart contract. 
+```javascript
+// read variable
+const message = await contract.message(); 
+// call function
+const tx = await contract.update("Update Message!"); 
+await tx.wait(); 
+```
+Run ```interact.js``` script to execute transaction.
+```sh
+npx hardhat run scripts/interact.js --network goerli
 ```
