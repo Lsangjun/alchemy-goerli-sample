@@ -22,13 +22,13 @@ We will deploy simple smart contract to Goerli Ethereum Testnet.
 ```sh
 npx hardhat
 ```
-- Add API_URL, API_KEY, WALLET_PRIVATE_KEY to .env
+Add API_URL, API_KEY, WALLET_PRIVATE_KEY to ```.env``` 
 ```plain
 API_URL = ""
 API_KEY = ""
 PRIVATE_KEY = ""
 ```
-- Set up hardhat
+```hardhat.config.js``` - Set up hardhat
 ```javascript
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -100,7 +100,7 @@ npx hardhat run scripts/deploy.js --network goerli
 ```
 
 ## Interact with deployed smart contract
-```interact.js```
+For full script please reference ```interact.js```
 
 With contract address and abi, we can directly interact with the smart contract. We need a Ethereum Node Provider, in this case, *Alchemy*, and signer, which is user(wallet) in this case. 
 ```javascript
@@ -124,3 +124,38 @@ Run ```interact.js``` script to execute transaction.
 ```sh
 npx hardhat run scripts/interact.js --network goerli
 ```
+
+## Verification
+To verify contract on Etherscan you will first need to deploy as explained above. 
+
+Install hardhat-etherscan plug-in and add it to ```hardhat.config.js``` You will also need etherscan api key, which you can get it from etherscan; Add api key to ```.env```
+```sh
+npm install --save-dev @nomiclabs/hardhat-etherscan
+```
+
+Checkout full file from ```hardhat.config.js```
+```javascript
+...
+
+require("@nomiclabs/hardhat-etherscan");
+
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY; 
+
+module.export = {
+    ...
+    // add setting for etherscan
+    etherscan: {
+        apiKey: ETHERSCAN_API_KEY
+    }
+};
+```
+
+- Verifying
+```sh
+npx hardhat verify --network goerli <CONTRACT_ADDRESS> <CONTRACT_CONSTRUCTOR_PARAMETER>
+
+# Example 
+npx hardhat verify --network 0xbaD425d09851f0a5676CFF6F149AFc60995000A9 'Hello World!' 
+```
+
+You can checkout verifed contract on Etherscan. If contract is verifed you could directly read and write to the contract on Etherscan by connecting your wallet. 
